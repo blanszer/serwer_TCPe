@@ -151,7 +151,10 @@ namespace klient1_TCP
             {
                 SetText2("Nie udało się wysłać, za długi czas oczekiwania" + se.Message);
             }
-            //SetText2("watek1" + Environment.NewLine);
+            catch (System.IO.IOException se)
+            {
+                SetText2(se.Message);
+            }
         }
 
         // Obsluga watku2
@@ -186,6 +189,7 @@ namespace klient1_TCP
                 button1.Text = "STOP";
                 ip_klienta = textBox7.Text;
                 port_klienta = Int32.Parse(textBox8.Text);
+                timer1.Interval = Int32.Parse(textBox9.Text);
             }
         }
 
