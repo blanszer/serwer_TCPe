@@ -15,10 +15,15 @@ namespace klient1_TCP
 {
     public partial class Form1 : Form
     {
+        // Flaga aktywnosci transmisji danych
+        private static bool START_STOP = false;
+
+        string ip_klienta;
+        int port_klienta;
+
         public Form1()
         {
             InitializeComponent();
-
         }
 
 
@@ -107,7 +112,6 @@ namespace klient1_TCP
 
 #endregion
 
-        int zmienna;
         private void timer1_Tick(object sender, EventArgs e)
         {
             // WAZNE: Tworzenie watka1 przypisanie go do watek1()
@@ -115,7 +119,7 @@ namespace klient1_TCP
             // WAZNE: Tworzenie watka2 i przypisanie go do watek2()
             Thread tid_watek2 = new Thread(new ThreadStart(watek2));
             // Uruchomienie obu watkow
-            tid_watek1.Start();
+           if(START_STOP) tid_watek1.Start(); 
             tid_watek2.Start();   
         }
 
@@ -128,12 +132,10 @@ namespace klient1_TCP
             {
                 SetText2("próbuję wysłać dane");
                 //TcpClient client = new TcpClient("192.168.178.105", 1200);    //siec lan
-                TcpClient client = new TcpClient("127.0.0.1", 1200);    //localhost
+                TcpClient client = new TcpClient(ip_klienta, port_klienta);    //localhost
                 client.SendTimeout = 100;
                 NetworkStream n = client.GetStream();
                 SetText2(" Połączono");
-                zmienna++;
-                //string ch = zmienna.ToString();
                 //wysłanie ramki danych [x y host ip time]
                 string ch = textBox1.Text + Environment.NewLine
                    + textBox6.Text + Environment.NewLine
@@ -168,6 +170,23 @@ namespace klient1_TCP
         private void Form1_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (START_STOP)
+            {
+                START_STOP = false;
+                button1.Text = "START";
+                //client.Close();   
+            }
+            else
+            {
+                START_STOP = true;
+                button1.Text = "STOP";
+                ip_klienta = textBox7.Text;
+                port_klienta = Int32.Parse(textBox8.Text);
+            }
         }
 
     }
